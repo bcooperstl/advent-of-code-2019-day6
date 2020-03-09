@@ -135,3 +135,32 @@ void set_depth_recusrive(node * parent)
         child = child->next_sibling;
     }
 }
+
+node * find_common_parent(node * one, node * two)
+{
+    int one_parent_counter=0;
+    node * one_parent_nodes[256]; // should be enough
+    node * curr = one->parent;
+    while (curr->parent != NULL)
+    {
+        one_parent_nodes[one_parent_counter++]=curr;
+        curr=curr->parent;
+    }
+    curr = two->parent;
+    while (curr->parent != NULL)
+    {
+        for (int i=0; i<one_parent_counter; i++)
+        {
+            if (curr == one_parent_nodes[i])
+            {
+                printf("common parent of %s found\n", curr->name);
+                return curr;
+            }
+        }
+        curr=curr->parent;
+    }
+    
+    fprintf(stderr, "No common parent found between %s and %s\n", one->name, two->name);
+    return NULL;
+}
+
