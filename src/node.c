@@ -12,6 +12,7 @@ void add_child (node * parent, node * child)
         exit(1);
     }
     child->parent=parent;
+
     if (parent->head_child == NULL) // first child for this parent
     {
         parent->head_child = child;
@@ -20,7 +21,7 @@ void add_child (node * parent, node * child)
     else
     {
         node * parent_child_iter = parent->head_child;
-        while (parent_child_iter != NULL)
+        while (parent_child_iter->next_sibling != NULL)
         {
             parent_child_iter = parent_child_iter->next_sibling;
         }
@@ -33,7 +34,7 @@ node * find_node(char * name, dictionary * dictionary)
 {
     char key = name[0];
     node * list_node = dictionary->nodes[key];
-    
+
     if (list_node == NULL) // nothing in the dictionary for the first letter of the name.
     {
         return NULL;
@@ -60,7 +61,7 @@ void add_to_dictionary(node * target, dictionary * dictionary)
     node * list_node = dictionary->nodes[key];
     if (list_node == NULL)
     {
-        list_node = target;
+        dictionary->nodes[key]=target;
     }
     else
     {
@@ -72,6 +73,7 @@ void add_to_dictionary(node * target, dictionary * dictionary)
                 fprintf(stderr, "FATAL ERROR - node %s is already in the dictionary!!\n", target->name);
                 exit(1);
             }
+            list_node = list_node->next_dictionary;
         }
         
         list_node = dictionary->nodes[key];
@@ -80,7 +82,7 @@ void add_to_dictionary(node * target, dictionary * dictionary)
             list_node = list_node->next_dictionary;
         }
         // now list_node has the last element for this dictionary entry. Add this element to it.
-        list_node->next_dictionary = NULL;
+        list_node->next_dictionary = target;
     }
 }
 
@@ -118,5 +120,18 @@ void delete_all_nodes(dictionary * dictionary)
             free(tmp);
         }
         dictionary->nodes[i] = NULL;
+    }
+}
+
+void set_depth_recusrive(node * parent)
+{
+    int child_depth = parent->depth+1;
+    node * child = parent->head_child;
+    while (child != NULL)
+    {
+        //printf("set %s to depth %d\n", child->name, child_depth);
+        child->depth = child_depth;
+        set_depth_recusrive(child);
+        child = child->next_sibling;
     }
 }

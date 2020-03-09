@@ -28,5 +28,6 @@ node * find_node(char * name, dictionary * dictionary);
 void add_to_dictionary(node * target_node, dictionary *  dictionary);
 void add_node(char * center, char * orbiter, dictionary * dictionary);
 void delete_all_nodes(dictionary * dictionary);
+void set_depth_recusrive(node * parent);
 
 #endif
